@@ -5,8 +5,10 @@ using System.Linq;
 using System.Web;
 
 namespace EDa.Models {
-    public class ProductDbInitializer : CreateDatabaseIfNotExists<EdaContext> {
+    public class ProductDbInitializer : DropCreateDatabaseAlways<EdaContext> {
         protected override void Seed(EdaContext db) {
+            db.Menus.Add(new Menu { Date = DateTime.Now.Date });
+
             db.Categories.Add(new Category { Name = "Супы" });
             db.Categories.Add(new Category { Name = "Вторые блюда" });
             db.Categories.Add(new Category { Name = "Салаты" });
@@ -20,6 +22,13 @@ namespace EDa.Models {
             db.Products.Add(new Product { Name = "Цезарь", Cost = 250, CategoryId = 3 });
             db.Products.Add(new Product { Name = "Чай", Cost = 50, CategoryId = 4 });
             db.Products.Add(new Product { Name = "Кофе", Cost = 80, CategoryId = 4 });
+
+            db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 1});
+            db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 3 });
+            db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 6 });
+
+            db.Orders.Add(new Order { ClientName = "Саша", ClientAdress = "Наставников 5/3", Date = DateTime.Today });
+            db.Orders.Add(new Order { ClientName = "Марина", ClientAdress = "Ленская 5/3", Date = DateTime.Today });
         }
     }
 }
