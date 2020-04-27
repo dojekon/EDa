@@ -1,0 +1,257 @@
+﻿@{
+    Layout = null;
+}
+@model EDa.Models.Product
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="~/Content/sidebar.css">
+    <script src="https://kit.fontawesome.com/0308fc8c7b.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://rawgit.com/wwilsman/Datepicker.js/master/dist/css/datepicker.material.css">
+    <script src="https://rawgit.com/wwilsman/Datepicker.js/master/dist/datepicker.js"></script>
+    <title>EDa!: Менеджер</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">EDa! : Менеджер</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+                <li class="nav-item">
+                    <a class="nav-link" href="../Manager/Index">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../ManagerOrders/Index">Заказы </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="../ManagerMenu/Index">Меню <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Статистика</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main class="content-wrapper" id="mainCont">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-3" style="flex: 0 0 19%;">
+                    <h3>Список меню по дням:</h3>
+                    @foreach (dynamic Menu in ViewBag.Menus) {
+                        <div class="card mt-2" style="width: 20rem">
+                            <div class="card-body pb-0">
+                                <div class="row ml-1">
+                                    <h5 class="card-title">Меню на @Menu.Date </h5>
+                                    <a class="btn btn-success btn-sm ml-1" href="path/to/settings" style="height: 32px;" aria-label="Редактировать">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <a class="btn btn-danger btn-sm ml-1" href="path/to/settings" style="height: 32px;" aria-label="Удалить">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                @foreach (var Prod in Menu.Products) {
+                                    <li class="list-group-item"> @Prod.Name </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </div>
+                <div class="col-4">
+                    <h3>Достпуные блюда:</h3>
+                    @foreach (dynamic Cat in ViewBag.CatProd) {
+                        <div class="card mt-2" style="width: 20rem">
+                            <div class="card-body pb-0">
+                                <h5 class="card-title">@Cat.Key </h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                @foreach (var prod in Cat.Value) {
+                                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                                        <li class="list-group-item"> @prod.Name </li>
+                                        <div class="mt-2">
+                                            <a class="btn btn-success btn-sm ml-1" href="javascript:ModalEditProduct('@prod.Name','@Cat.Key');" style="height: 32px;" aria-label="Редактировать">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </a>
+                                            <a class="btn btn-danger btn-sm ml-1" href="javascript:ModalDeleteProduct('@prod.Name')" style="height: 32px;" aria-label="Удалить">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                }
+                            </ul>
+                        </div>
+                    }
+                </div>
+                <div class="col">
+                    <h3>Добавить меню:</h3>
+                    <div class="row col-4">
+                        <div class="container">
+                            <form>
+                                <div class="form-group">
+                                    <label for="datepicker" class="col-form-label">Дата:</label>
+                                    <input type="text" id="datepicker" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary" onclick="AddFood()" style="width: 37px;">+</button>
+                                    <button type="button" class="btn btn-primary" onclick="DeleteFood()" style="width: 37px;"> - </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <h3>Добавить блюдо:</h3>
+                    <div class="row col-5">
+                        <div class="container">
+                            <form>
+                                <div class="form-group">
+                                    <label for="EditProdInput" class="col-form-label">Название:</label>
+                                    <input type="text" class="form-control" id="EditProdInput">
+                                </div>
+                                <div class="form-group">
+                                    <label for="EditProdSelect">Категория</label>
+                                    <select class="form-control" id="EditProdSelect">
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <h3>Добавить категорию:</h3>
+                    <div class="row">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="DeleteProdModal" tabindex="-1" role="dialog" aria-labelledby="DeleteProdModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DeleteProdModalLabel">Подтверждение</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Вы уверены, что хотите удалить блюдо?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-secondary" onclick="DeleteProduct()">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="EditProdModal" tabindex="-1" role="dialog" aria-labelledby="EditProdModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="EditProdModalLabel">Редактирование</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Новое название:</label>
+                            <input type="text" class="form-control" id="EditProdInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="EditProdSelect">Категория</label>
+                            <select class="form-control" id="EditProdSelect">
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="EditProd()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @Scripts.Render("~/scripts/jquery-3.4.1.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html >
+
+<script type="text/javascript">
+    var datepicker = new Datepicker('#datepicker');
+
+
+    var EditableProd;
+    var DelitableProd;
+
+    function ModalEditProduct(prodName, curCat) {
+        EditableProd = prodName;
+        $('#EditProdModal').modal();
+        $('#EditProdInput').attr('value', EditableProd);
+
+        $.ajax({
+            url: '@Url.Action("GetCategories")',         /* Куда пойдет запрос */
+            method: 'get',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            async: false,
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                for (var key in data) {
+                    $('#EditProdSelect').append('<option value="' + data[key] + '">' + data[key] + '</option>');
+                }
+                $("#EditProdSelect" + " option[value='" + curCat + "']").attr("selected", "selected");
+            }
+        });
+    }
+
+    function EditProd() {
+        var Data = {
+            ProdName: EditableProd,
+            NewProdName: document.getElementById("EditProdInput").value,
+            NewProdCat: document.getElementById("EditProdSelect").value
+        };
+        console.log(JSON.stringify(Data));
+        $.ajax({
+            url: '@Url.Action("SaveEditProd")',
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({ JsonString: JSON.stringify(Data) }),
+            contentType: 'application/json',
+        });
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/ManagerMenu/Index';
+    }
+
+    function ModalDeleteProduct(prodName) {
+        $('#DeleteProdModal').modal();
+        DelitableProd = prodName;
+    }
+
+    function DeleteProduct() {
+        $.ajax({
+            url: '@Url.Action("DeleteProduct")',
+            data: { name: DelitableProd }
+        });
+
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/ManagerMenu/Index';
+    }
+</script>

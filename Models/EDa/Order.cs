@@ -1,5 +1,4 @@
-﻿using EDa.Models.EDa;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,7 +9,7 @@ namespace EDa.Models {
         public string ClientName{ get; set; }
         public string ClientAdress { get; set; }
         public DateTime Date { get; set; }
-        public ICollection<OrderProduct> OrderProducts { get; set; }
+        public List<OrderProduct> Products { get; set; }
 
     }
 }

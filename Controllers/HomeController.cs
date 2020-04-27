@@ -11,8 +11,7 @@ namespace EDa.Controllers {
         
         public ActionResult Index() {
             using (EdaContext db = new EdaContext()) {
-                var Products = db.Products.Include(p => p.Category).ToList();
-                ViewBag.Products = Products;
+               
                 return View();
             }
         }

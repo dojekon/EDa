@@ -1,6 +1,74 @@
 ﻿@model EDa.Models.Order
 
-      @Html.DisplayForModel()
+<p><strong>Номер заказа: </strong>@ViewBag.order.Id</p>
+<p><strong>Имя заказчика: </strong>@ViewBag.order.ClientName</p>
+<p><strong>Адрес: </strong>@ViewBag.order.ClientAdress</p>
+<p><strong>Время заказа:  </strong> @ViewBag.order.Date</p>
+
+<table class="table col">
+    <thead>
+        <tr>
+            <th scope="col">Название</th>
+            <th scope="col">Цена</th>
+            <th scope="col">Кол-во</th>
+            <th scope="col">Стоимость</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in ViewBag.order.Products) {
+            <tr>
+                <td>@product.Product.Name</td>
+                <td>@product.Product.Cost руб.</td>
+                <td>@product.Amount</td>
+                <td>@(product.Product.Cost * product.Amount) руб.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Сумма заказа: @ViewBag.Amount руб.</h3>
+<div class="col-6 col-sm-10 mt-3">
+    @Ajax.ActionLink("Редактировать", "EditOrder", new { id = ViewBag.order.Id }, new AjaxOptions { UpdateTargetId = "mainCont", HttpMethod = "GET" }, new { @class = "ml-0 list-group-item list-group-item-action list-group-item-primary" })
+    <button type="button" class="mt-3 btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+        Удалить заказ
+    </button>
+</div>
 
 
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Подтверждение</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить заказ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-secondary" onclick="DeleteOrder()">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/scripts/jquery-3.4.1.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+<script type="text/javascript">
+    function DeleteOrder() {
+        $.ajax({
+            url: '@Url.Action("DeleteOrder")' + '/@ViewBag.order.Id',
+            type: 'post',
+            dataType: 'JSON',
+            contentType: 'JSON',
+        });
+
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/ManagerOrders/Index';
+    }
+</script>

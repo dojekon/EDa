@@ -27,8 +27,16 @@ namespace EDa.Models {
             db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 3 });
             db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 6 });
 
-            db.Orders.Add(new Order { ClientName = "Саша", ClientAdress = "Наставников 5/3", Date = DateTime.Today });
+            Order o1 = new Order { ClientName = "Саша", ClientAdress = "Наставников 5/3", Date = DateTime.Today };
+            db.Orders.Add(o1);
             db.Orders.Add(new Order { ClientName = "Марина", ClientAdress = "Ленская 5/3", Date = DateTime.Today });
+            db.SaveChanges();
+            db.OrderProducts.Add(new OrderProduct { Order = o1, ProductId = 1, Amount = 1 });
+            db.OrderProducts.Add(new OrderProduct { Order = o1, ProductId = 3, Amount = 1});
+            db.OrderProducts.Add(new OrderProduct { Order = o1, ProductId = 6, Amount = 2 });
+            db.Configuration.ProxyCreationEnabled = false;
+
+            db.SaveChanges();
         }
     }
 }

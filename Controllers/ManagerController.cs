@@ -32,6 +32,24 @@ namespace EDa.Controllers
             DateTime dateAndTime = DateTime.Now;
             ViewBag.DateToday = dateAndTime.ToString("dd.MM.yyyy");
 
+            List<string> todayOrders = new List<string>();
+            List<string> lastOrders = new List<string>();
+
+            foreach (var order in db.Orders) {
+                if (order.Date == DateTime.Today) {
+                    todayOrders.Add("№ " + order.Id);
+                }
+                lastOrders.Add("№ " + order.Id);
+            }
+            ViewBag.todayOrders = todayOrders;
+
+            lastOrders.Reverse();
+            ViewBag.lastOrders = new List<string>();
+
+            for (int i = 0;(lastOrders.Count > i) && (i < 5); i++) {
+                ViewBag.lastOrders.Add(lastOrders[i]);
+            }
+           
             return View();
         }
         /*

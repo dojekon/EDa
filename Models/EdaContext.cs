@@ -1,9 +1,10 @@
-﻿using EDa.Models.EDa;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 
 
 namespace EDa.Models {
     public class EdaContext : DbContext {
+
+        public EdaContext() : base("EdaContext") { }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Menu> Menus { get; set; }

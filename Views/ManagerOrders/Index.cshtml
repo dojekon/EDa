@@ -30,7 +30,7 @@
                     <a class="nav-link" href="../ManagerOrders/Index">Заказы <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Меню</a>
+                    <a class="nav-link" href="../ManagerMenu/Index">Меню</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Статистика</a>
@@ -38,19 +38,19 @@
             </ul>
         </div>
     </nav>
-    <main class="content-wrapper ">
+    <main class="content-wrapper" id="mainCont">
         <div class="container-fluid">
-            <div class="col-3">
-                <div class="list-group" id="list-tab" role="tablist">
-                    @foreach (int order in ViewBag.Orders) {
-                        @Ajax.ActionLink("№ " + order.ToString(), "GetOrder", new { id = order }, new AjaxOptions { UpdateTargetId = "OrderInfo", HttpMethod = "POST" })
-
-                        //<a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
-                    }
+            <div class="row">
+                <div class="col-3">
+                    <div class="list-group" id="list-tab" role="tablist">   
+                        @foreach (int order in ViewBag.Orders) {
+                            @Ajax.ActionLink("№ " + order.ToString(), "GetOrder", new { id = order }, new AjaxOptions { UpdateTargetId = "OrderInfo", HttpMethod = "POST" }, new { @class = "list-group-item list-group-item-action" })
+                        }
+                    </div>
                 </div>
-            </div>
-            <div class="col-5">
-                <div id="OrderInfo"></div>
+                <div class="col-5">
+                    <div id="OrderInfo"></div>
+                </div>
             </div>
         </div>
     </main>

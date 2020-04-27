@@ -31,7 +31,7 @@
                     <a class="nav-link" href="../ManagerOrders/Index">Заказы</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Меню</a>
+                    <a class="nav-link" href="../ManagerMenu/Index">Меню</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Статистика</a>
@@ -42,7 +42,6 @@
     <main class="content-wrapper">
         <div class="container-fluid">
             <div class="row">
-
                 <div class="card ml-5" style="width: 25rem">
                     <div class="card-body">
                         <h5 class="card-title">Меню на сегодня @ViewBag.DateToday</h5>
@@ -51,16 +50,16 @@
                         @foreach (var Product in ViewBag.Menu) {
                             <li class="list-group-item">@Product.Name</li>
                         }
-                        </ul>
+                    </ul>
                 </div>
                 <div class="card ml-5" style="width: 25rem">
                     <div class="card-body">
                         <h5 class="card-title">Заказы сегодня</h5>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Cras justo odio</li>
-                        <li class="list-group-item">Dapibus ac facilisis in</li>
-                        <li class="list-group-item">Vestibulum at eros</li>
+                        @foreach (var Id in ViewBag.todayOrders) {
+                            <li class="list-group-item">@Id</li>
+                        }
                     </ul>
                 </div>
 
@@ -72,9 +71,10 @@
                         <h5 class="card-title">Последние заказы</h5>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Cras justo odio</li>
-                        <li class="list-group-item">Dapibus ac facilisis in</li>
-                        <li class="list-group-item">Vestibulum at eros</li>
+                        @foreach (var Id in ViewBag.lastOrders) {
+                            <li class="list-group-item">@Id</li>
+
+                        }
                     </ul>
                 </div>
             </div>
