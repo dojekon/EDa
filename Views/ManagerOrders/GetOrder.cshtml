@@ -27,7 +27,7 @@
 </table>
 
 <h3>Сумма заказа: @ViewBag.Amount руб.</h3>
-<div class="col-6 col-sm-10 mt-3">
+<div class="col-3 mt-3">
     @Ajax.ActionLink("Редактировать", "EditOrder", new { id = ViewBag.order.Id }, new AjaxOptions { UpdateTargetId = "mainCont", HttpMethod = "GET" }, new { @class = "ml-0 list-group-item list-group-item-action list-group-item-primary" })
     <button type="button" class="mt-3 btn btn-danger" data-toggle="modal" data-target="#exampleModal">
         Удалить заказ

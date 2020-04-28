@@ -44,17 +44,17 @@
     <main class="content-wrapper" id="mainCont">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-3" style="flex: 0 0 19%;">
+                <div class="col-3 border-right" style="flex: 0 0 19%;">
                     <h3>Список меню по дням:</h3>
                     @foreach (dynamic Menu in ViewBag.Menus) {
                         <div class="card mt-2" style="width: 20rem">
                             <div class="card-body pb-0">
                                 <div class="row ml-1">
                                     <h5 class="card-title">Меню на @Menu.Date </h5>
-                                    <a class="btn btn-success btn-sm ml-1" href="path/to/settings" style="height: 32px;" aria-label="Редактировать">
+                                    <a class="btn btn-success btn-sm ml-1" href="javascript:ModalEditMenu('@Menu.Date');" style="height: 32px;" aria-label="Редактировать">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
-                                    <a class="btn btn-danger btn-sm ml-1" href="path/to/settings" style="height: 32px;" aria-label="Удалить">
+                                    <a class="btn btn-danger btn-sm ml-1" href="javascript:DeleteMenu('@Menu.Date');" style="height: 32px;" aria-label="Удалить">
                                         <i class="fa fa-trash-o" aria-hidden="true"></i>
                                     </a>
                                 </div>
@@ -67,19 +67,27 @@
                         </div>
                     }
                 </div>
-                <div class="col-4">
-                    <h3>Достпуные блюда:</h3>
+                <div class="col-3 ml-5 border-right">
+                    <h3>Доступные блюда:</h3>
                     @foreach (dynamic Cat in ViewBag.CatProd) {
-                        <div class="card mt-2" style="width: 20rem">
+                        <div class="card mt-2" style="width: 22rem">
                             <div class="card-body pb-0">
-                                <h5 class="card-title">@Cat.Key </h5>
+                                <div class="row ml-1">
+                                    <h5 class="card-title">@Cat.Key </h5>
+                                    <a class="btn btn-success btn-sm ml-1" href="javascript:ModalEditCat('@Cat.Key');" style="height: 32px;" aria-label="Редактировать">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <a class="btn btn-danger btn-sm ml-1" href="javascript:DeleteCat('@Cat.Key');" style="height: 32px;" aria-label="Удалить">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </a>
+                                </div>
                             </div>
                             <ul class="list-group list-group-flush">
                                 @foreach (var prod in Cat.Value) {
                                     <div class="row" style="margin-left: 0px; margin-right: 0px;">
-                                        <li class="list-group-item"> @prod.Name </li>
+                                        <li class="list-group-item"> @prod.Name - @prod.Cost руб.</li>
                                         <div class="mt-2">
-                                            <a class="btn btn-success btn-sm ml-1" href="javascript:ModalEditProduct('@prod.Name','@Cat.Key');" style="height: 32px;" aria-label="Редактировать">
+                                            <a class="btn btn-secondary btn-sm ml-1" href="javascript:ModalEditProduct('@prod.Name','@Cat.Key','@prod.Cost');" style="height: 32px;" aria-label="Редактировать">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             <a class="btn btn-danger btn-sm ml-1" href="javascript:ModalDeleteProduct('@prod.Name')" style="height: 32px;" aria-label="Удалить">
@@ -95,41 +103,51 @@
                 </div>
                 <div class="col">
                     <h3>Добавить меню:</h3>
-                    <div class="row col-4">
-                        <div class="container">
-                            <form>
-                                <div class="form-group">
-                                    <label for="datepicker" class="col-form-label">Дата:</label>
-                                    <input type="text" id="datepicker" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary" onclick="AddFood()" style="width: 37px;">+</button>
-                                    <button type="button" class="btn btn-primary" onclick="DeleteFood()" style="width: 37px;"> - </button>
-                                </div>
-                            </form>
-                        </div>
+                    <div class="row col-4 mb-3 border-bottom">
+                        <form>
+                            <div class="form-group">
+                                <label for="datepicker" class="col-form-label mr-5">Дата:</label>
+                                <input type="text" id="datepicker" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary" onclick="AddFood()" style="width: 37px;">+</button>
+                                <button type="button" class="btn btn-secondary" onclick="DeleteFood()" style="width: 37px;"> - </button>
+                            </div>
+                            <label class="col-form-label mr-5">Блюда:</label>
+                            <div id="foodBlock"></div>
+                            <button type="button" class="btn btn-primary mb-3" onclick="AddMenu()">Добавить</button>
+                        </form>
                     </div>
 
                     <h3>Добавить блюдо:</h3>
-                    <div class="row col-5">
-                        <div class="container">
-                            <form>
-                                <div class="form-group">
-                                    <label for="EditProdInput" class="col-form-label">Название:</label>
-                                    <input type="text" class="form-control" id="EditProdInput">
-                                </div>
-                                <div class="form-group">
-                                    <label for="EditProdSelect">Категория</label>
-                                    <select class="form-control" id="EditProdSelect">
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
+                    <div class="row col-5 mb-2 border-bottom">
+                        <form>
+                            <div class="form-group">
+                                <label for="EditProdInput" class="col-form-label">Название:</label>
+                                <input type="text" class="form-control" id="NewProdInput">
+                            </div>
+                            <div class="form-group">
+                                <label for="EditProdSelect">Категория:</label>
+                                <select class="form-control" id="NewProdSelect">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="datepicker" class="col-form-label mr-5">Цена:</label>
+                                <input type="text" id="NewProdCost" class="form-control">
+                            </div>
+                            <button type="button" class="btn btn-primary mb-3" onclick="AddProduct()">Добавить</button>
+                        </form>
                     </div>
 
                     <h3>Добавить категорию:</h3>
-                    <div class="row">
-
+                    <div class="row col-4 mb-2">
+                        <div class="form-group">
+                            <label for="EditProdInput" class="col-form-label">Название:</label>
+                            <input type="text" class="form-control" id="NewCatInput">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" onclick="AddCategory()">Добавить</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -156,6 +174,36 @@
         </div>
     </div>
 
+    <div class="modal fade" id="EditMenuModal" tabindex="-1" role="dialog" aria-labelledby="EditMenuModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="EditMenuModalLabel">Редактирование</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Дата:</label>
+                            <input type="text" class="form-control" id="EditMenuDatepicker">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-secondary" onclick="AddFoodEditMenu()" style="width: 37px;">+</button>
+                            <button type="button" class="btn btn-secondary" onclick="DeleteFoodEditMenu()" style="width: 37px;"> - </button>
+                        </div>
+                        <div id="editMenuFood"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="EditMenu()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="EditProdModal" tabindex="-1" role="dialog" aria-labelledby="EditProdModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -172,15 +220,44 @@
                             <input type="text" class="form-control" id="EditProdInput">
                         </div>
                         <div class="form-group">
-                            <label for="EditProdSelect">Категория</label>
+                            <label for="EditProdSelect">Категория:</label>
                             <select class="form-control" id="EditProdSelect">
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditProdSelect">Цена:</label>
+                            <input type="text" class="form-control" id="EditProdCost">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
                     <button type="button" class="btn btn-primary" onclick="EditProd()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="EditCatModal" tabindex="-1" role="dialog" aria-labelledby="EditCatModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="EditCatModalLabel">Редактирование</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Новое название:</label>
+                            <input type="text" class="form-control" id="EditCatInput">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="EditCat()">Сохранить</button>
                 </div>
             </div>
         </div>
@@ -194,20 +271,136 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
-</html >
+</html>
 
 <script type="text/javascript">
     var datepicker = new Datepicker('#datepicker');
+    var datepicker1 = new Datepicker('#EditMenuDatepicker');
 
+    var foodCount = 0;
+    var editMenuFoodCount = 0;
+    AddFood();
+    FillCategories();
 
     var EditableProd;
     var DelitableProd;
+    var EditableMenu;
 
-    function ModalEditProduct(prodName, curCat) {
+    var EditableCat;
+
+    function ModalEditCat(name) {
+        EditableCat = name;
+        $('#EditCatModal').modal();
+        $('#EditCatInput').attr('value', name);
+    }
+
+    function EditCat() {
+        var Data = {
+            OldName: EditableCat,
+            NewName: document.getElementById("EditCatInput").value
+        };
+
+        $.ajax({
+            url: '@Url.Action("EditCategory")',
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({ JsonString: JSON.stringify(Data) }),
+            contentType: 'application/json',
+        });
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/ManagerMenu/Index';
+    }
+
+        function DeleteCat(name) {
+        if (confirm("Вы уверены, что хотите удалить эту категорию?")) {
+            $.ajax({
+            url: '@Url.Action("DeleteCategory")',
+            data: { Name: name }
+            });
+
+            alert("Успешно!");
+            document.location = 'https://localhost:44374/ManagerMenu/Index';
+        }
+    }
+
+    function ModalEditMenu(date) {
+        EditableMenu = date;
+        $('#EditMenuModal').modal();
+        editMenuFoodCount = 0;
+        document.getElementById('editMenuFood').innerHTML = '';
+        document.getElementById("EditMenuDatepicker").value = date;
+
+        $.ajax({
+            url: '@Url.Action("GetMenuProducts")',         /* Куда пойдет запрос */
+            method: 'get',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            async: false,
+            data: { Date: date },
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                console.log(data);
+                for (var key in data) {
+                    AddFoodEditMenu();
+                    $("#EditMenuSelectFood" + editMenuFoodCount + " option[value='" + data[key] + "']").attr("selected", "selected");
+                }
+            }
+        });
+    }
+
+    function EditMenu() {
+        var Products = [];
+        var j = 0;
+        for (var i = 1; i <= editMenuFoodCount; i++) {
+            Products[j] = document.getElementById("EditMenuSelectFood" + i).value;
+            j++;
+        }
+
+        var Data = {
+            OldDate: EditableMenu,
+            NewDate: document.getElementById("EditMenuDatepicker").value,
+            Products: Products
+        };
+
+        $.ajax({
+            url: '@Url.Action("EditMenu")',
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({ JsonString: JSON.stringify(Data) }),
+            contentType: 'application/json',
+        });
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/ManagerMenu/Index';
+    }
+
+    function AddFoodEditMenu() {
+        editMenuFoodCount++;
+
+        document.getElementById('editMenuFood').innerHTML += '<div class="form-group form-inline" id="EditMenuEditFood' + editMenuFoodCount + '"> <select class="form-control" id="EditMenuSelectFood' + editMenuFoodCount + '"></select></div>';
+
+        $.ajax({
+            url: '@Url.Action("GetProducts", "ManagerOrders")',         /* Куда пойдет запрос */
+            method: 'get',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            async: false,
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                for (var key in data) {
+                    $('#EditMenuSelectFood' + editMenuFoodCount).append('<option value="' + data[key] + '">' + data[key] + '</option>');
+                }
+            }
+        });
+    }
+
+    function DeleteFoodEditMenu() {
+        if (editMenuFoodCount != 0) {
+            document.getElementById("EditMenuEditFood" + editMenuFoodCount).remove();
+            editMenuFoodCount -= 1;
+        }
+    }
+
+    function ModalEditProduct(prodName, curCat, curCost) {
         EditableProd = prodName;
         $('#EditProdModal').modal();
         $('#EditProdInput').attr('value', EditableProd);
-
+        $('#EditProdCost').attr('value', curCost);
         $.ajax({
             url: '@Url.Action("GetCategories")',         /* Куда пойдет запрос */
             method: 'get',             /* Метод передачи (post или get) */
@@ -226,7 +419,8 @@
         var Data = {
             ProdName: EditableProd,
             NewProdName: document.getElementById("EditProdInput").value,
-            NewProdCat: document.getElementById("EditProdSelect").value
+            NewProdCat: document.getElementById("EditProdSelect").value,
+            NewProdCost: document.getElementById("EditProdCost").value
         };
         console.log(JSON.stringify(Data));
         $.ajax({
@@ -253,5 +447,111 @@
 
         alert("Успешно!");
         document.location = 'https://localhost:44374/ManagerMenu/Index';
+    }
+
+    function AddFood() {
+        foodCount++;
+
+        document.getElementById('foodBlock').innerHTML += '<div class="form-group form-inline" id="food' + foodCount + '"> <select class="form-control" id="selectFood' + foodCount + '"></select></div>';
+
+        $.ajax({
+            url: '@Url.Action("GetProducts", "ManagerOrders")',         /* Куда пойдет запрос */
+            method: 'get',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            async: false,
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                for (var key in data) {
+                    $('#selectFood' + foodCount).append('<option value="' + data[key] + '">' + data[key] + '</option>');
+                }
+            }
+        });
+    }
+
+    function DeleteFood() {
+        if (foodCount != 0) {
+            document.getElementById("food" + foodCount).remove();
+            foodCount -= 1;
+        }
+    }
+
+    function AddMenu() {
+        var Products = [];
+        var j = 0;
+        for (var i = 1; i <= foodCount; i++) {
+            Products[j] = {
+                Name: document.getElementById("selectFood" + i).value,
+            }
+            j++;
+        }
+        var Data;
+        Data = {
+            Date: document.getElementById("datepicker").value,
+            Products: Products
+        }
+        console.log(JSON.stringify(Data));
+
+        $.ajax({
+            url: '@Url.Action("AddMenu")',
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({ JsonString: JSON.stringify(Data) }),
+            contentType: 'application/json',
+        });
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/ManagerMenu/Index';
+    }
+
+    function AddProduct() {
+        var Data = {
+            ProductName: document.getElementById("NewProdInput").value,
+            ProductCat: document.getElementById("NewProdSelect").value,
+            ProductCost: document.getElementById("NewProdCost").value
+        };
+
+        $.ajax({
+            url: '@Url.Action("AddProduct")',
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({ JsonString: JSON.stringify(Data) }),
+            contentType: 'application/json',
+        });
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/ManagerMenu/Index';
+    }
+
+    function FillCategories() {
+        $.ajax({
+            url: '@Url.Action("GetCategories")',         /* Куда пойдет запрос */
+            method: 'get',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            async: false,
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                for (var key in data) {
+                    $('#NewProdSelect').append('<option value="' + data[key] + '">' + data[key] + '</option>');
+                }
+            }
+        });
+    }
+
+    function AddCategory() {
+        $.ajax({
+            url: '@Url.Action("AddCategory")',
+            data: { name: document.getElementById("NewCatInput").value }
+        });
+
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/ManagerMenu/Index';
+    }
+
+    function DeleteMenu(date) {
+        if (confirm("Вы уверены, что хотите удалить меню?")) {
+            $.ajax({
+            url: '@Url.Action("DeleteMenu")',
+            data: { Date: date }
+            });
+
+            alert("Успешно!");
+            document.location = 'https://localhost:44374/ManagerMenu/Index';
+        }
     }
 </script>
