@@ -10,13 +10,17 @@ namespace EDa.Controllers {
         EdaContext db = new EdaContext();
         // GET: ManagerOrders
         public ActionResult Index() {
-            List<int> Orders = new List<int>();
-            foreach (var order in db.Orders) {
-                Orders.Add(order.Id);
-            }
-            Orders.Reverse();
-            ViewBag.Orders = Orders;
-            return View();
+            if (Session["UserGroup"] != null) {
+                if (Session["UserGroup"].ToString() == "manager") {
+                    List<int> Orders = new List<int>();
+                    foreach (var order in db.Orders) {
+                        Orders.Add(order.Id);
+                    }
+                    Orders.Reverse();
+                    ViewBag.Orders = Orders;
+                    return View();
+                } else return HttpNotFound();
+            } else return HttpNotFound();
         }
 
         [HttpPost]

@@ -3,5 +3,95 @@
     ViewBag.Title = "View";
 }
 
-<h2>View</h2>
+@{
+    Layout = null;
+}
 
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="~/Content/sidebar.css">
+    <title>EDa!: Оператор</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">EDa! : Оператор</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+                <li class="nav-item">
+                    <a class="nav-link" href="Index">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../OperatorNewOrder/Index">Новый заказ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../OperatorOrders/Index">Заказы</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="../OperatorMenu/Index">Меню <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fixed-bottom" style="width: fit-content;" href="@Url.Action("LogOut","Home")">Выйти</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main class="content-wrapper" id="mainCont">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-3">
+                    <div class="list-group" id="list-tab" role="tablist">
+
+                        @Ajax.ActionLink("Меню на сегодня", "TodayMenu", "", new AjaxOptions { UpdateTargetId = "MenuBlock", HttpMethod = "POST" }, new { @class = "list-group-item list-group-item-action" })
+                        @Ajax.ActionLink("Меню на неделю", "WeekMenu", "", new AjaxOptions { UpdateTargetId = "MenuBlock", HttpMethod = "POST" }, new { @class = "list-group-item list-group-item-action" })
+
+                    </div>
+                    <div class="col-3 mt-3">
+                        <button type="button" class="btn btn-success" onclick="PrintElem('#MenuBlock')">Распечатать меню</button>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div id="MenuBlock"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    @Scripts.Render("~/scripts/jquery-3.4.1.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+<script>
+    function PrintElem(elem) {
+        Popup($(elem).html());
+    }
+
+    function Popup(data) {
+        var mywindow = window.open('', 'my div', 'height=400,width=600');
+        mywindow.document.write('<html><head><title>EDa!</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">');
+        mywindow.document.write('</head><body>  ');
+        mywindow.document.write(data);
+        mywindow.document.write('</body></html>');
+        mywindow.document.close(); // necessary for IE >= 10
+        mywindow.focus(); // necessary for IE >= 10
+        mywindow.print();
+        mywindow.close();
+        return true;
+    }
+</script>

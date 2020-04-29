@@ -1,0 +1,10 @@
+﻿<div class="card ml-5" style="width: 25rem">
+    <div class="card-body">
+        <h5 class="card-title">Меню на сегодня @DateTime.Today.ToShortDateString()</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        @foreach (string Product in ViewBag.Products) {
+            <li class="list-group-item">@Product</li>
+        }
+    </ul>
+</div>

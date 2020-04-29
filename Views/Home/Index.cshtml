@@ -1,63 +1,72 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    Layout = null;
 }
-@*
-            <div class="jumbotron">
-                <h1>ASP.NET</h1>
-                <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-                <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EDa! - Авторизация</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+<body style="background: #252323;">
+    <div class="container py-5">
         <div class="row">
-            <div class="col-md-4">
-                <h2>Getting started</h2>
-                <p>
-                    ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                    enables a clean separation of concerns and gives you full control over markup
-                    for enjoyable, agile development.
-                </p>
-                <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>Get more libraries</h2>
-                <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-                <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>Web Hosting</h2>
-                <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-                <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-            </div>
-        </div>
+            <div class="col-md-12 py-5">
+                <div class="row">
+                    <div class="col-md-6 mx-auto py-4">
 
-    <div class="row">
-        <div class="col-md-4">
-            <h3>Блюда</h3>
-            <table>
-                <tr>
-                    <td><p>Категория</p></td>
-                    <td><p>Название</p></td>
-                    <td><p>Цена</p></td>
-                    <td></td>
-                </tr>
-                @foreach (var b in ViewBag.Products) {
-                    <tr>
-                        <td><p>@b.Category.Name</p></td>
-                        <td><p>@b.Name</p></td>
-                        <td><p>@b.Cost</p></td>
-                        <td><p><a href="/Home/Buy/@b.Id">Купить</a></p></td>
-                    </tr>
-                }
-            </table>
-        </div>
-    </div>*@
+                        <!-- form card login -->
+                        <div class="card rounded-0">
+                            <div class="card-header" style="background: #343a40; color: white;">
+                                <h3 class="mb-0">Авторизация</h3>
+                            </div>
+                            <div class="card-body">
+                                <form class="form" role="form" autocomplete="off" id="formLogin" novalidate="" action="/Home/Login" method="POST">
+                                    <div class="form-group">
+                                        <label for="login">Логин</label>
+                                        <input type="text" class="form-control form-control-lg rounded-0" name="login" id="uname1" required="">
+                                        <div class="invalid-feedback">Кажется вы пропустили это поле</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Пароль</label>
+                                        <input type="password" name="pass" class="form-control form-control-lg rounded-0" id="pwd1" required="" autocomplete="new-password">
+                                        <div class="invalid-feedback">Введите пароль</div>
+                                    </div>
+                                    <button type="submit" name="submit" class="btn btn-primary btn-lg " id="btnLogin">Войти</button>
+                                </form>
+                            </div>
+                            <!--/card-block-->
+                        </div>
+                        <!-- /form card login -->
 
-<div class="container-fluid">
-    <div class="col-md-2">
-        <div class="btn-group-vertical">
-            <button type="button" class="btn btn-secondary">Главная</button>
-            <button type="button" class="btn btn-secondary">Меню</button>
-            <button type="button" class="btn btn-secondary">Статистика</button>
+                    </div>
+
+
+                </div>
+                <!--/row-->
+
+            </div>
         </div>
     </div>
-</div>
+
+</body>
+</html>
+<script type="text/javascript">
+    $("#btnLogin").click(function (event) {
+
+        //Fetch form to apply custom Bootstrap validation
+        var form = $("#formLogin")
+
+        if (form[0].checkValidity() === false) {
+            event.preventDefault()
+            event.stopPropagation()
+        }
+
+        form.addClass('was-validated');
+    });
+
+</script>

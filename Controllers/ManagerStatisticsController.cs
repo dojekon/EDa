@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace EDa.Controllers {
@@ -17,7 +16,11 @@ namespace EDa.Controllers {
         EdaContext db = new EdaContext();
         // GET: ManagerStatistics
         public ActionResult Index() {
-            return View();
+            if (Session["UserGroup"] != null) {
+                if (Session["UserGroup"].ToString() == "manager") {
+                    return View();
+                } else return HttpNotFound();
+            } else return HttpNotFound();
         }
 
         public JsonResult GetStat(string dates) {
@@ -27,7 +30,7 @@ namespace EDa.Controllers {
 
             Dictionary<string, int> OrderStat = new Dictionary<string, int>();
             DateTime tempDays = startDate;
-            while (tempDays.IsInRange(startDate,endDate)) {
+            while (tempDays.IsInRange(startDate, endDate)) {
                 OrderStat.Add(tempDays.ToShortDateString(), 0);
                 tempDays = tempDays.AddDays(1);
             }
@@ -36,16 +39,6 @@ namespace EDa.Controllers {
                     OrderStat[order.Date.ToShortDateString()]++;
                 }
             }
-
-            /*
-                foreach (Order order in db.Orders.ToList()) {
-                    int ordersCount = 0;
-                    if (order.Date.IsInRange(startDate, endDate)) {
-                        ordersCount++;
-                    }
-                    if (OrderStat.ContainsKey(order.Date.ToShortDateString())) Order
-                    OrderStat.Add(order.Date.ToShortDateString(), ordersCount);
-                }*/
 
             Dictionary<string, int> FoodStat = new Dictionary<string, int>();
             foreach (Product product in db.Products.ToList()) {

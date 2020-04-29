@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-
-namespace EDa.Models {
+﻿namespace EDa.Models {
     public class ProductInMenu {
         public int Id { get; set; }
         public int ProductId { get; set; }

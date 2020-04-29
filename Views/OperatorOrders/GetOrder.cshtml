@@ -1,1 +1,58 @@
-﻿
+﻿@model EDa.Models.Order
+
+    <div id="print">
+        <p><strong>Номер заказа: </strong>@ViewBag.order.Id</p>
+        <p><strong>Имя заказчика: </strong>@ViewBag.order.ClientName</p>
+        <p><strong>Адрес: </strong>@ViewBag.order.ClientAdress</p>
+        <p><strong>Телефон: </strong>@ViewBag.order.ClientPhone</p>
+        <p><strong>Время заказа:  </strong> @ViewBag.order.Date</p>
+
+        <table class="table col">
+            <thead>
+                <tr>
+                    <th scope="col">Название</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Кол-во</th>
+                    <th scope="col">Стоимость</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in ViewBag.order.Products) {
+                    <tr>
+                        <td>@product.Product.Name</td>
+                        <td>@product.Product.Cost руб.</td>
+                        <td>@product.Amount</td>
+                        <td>@(product.Product.Cost * product.Amount) руб.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h3>Сумма заказа: @ViewBag.Amount руб.</h3>
+    </div>
+<div class="col-3 mt-3">
+    <button type="button" class="btn btn-success" onclick="PrintElem('#print')">Распечатать накладную</button>
+</div>
+
+
+@Scripts.Render("~/scripts/jquery-3.4.1.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+<script>
+    function PrintElem(elem) {
+        Popup($(elem).html());
+    }
+
+    function Popup(data) {
+        var mywindow = window.open('', 'my div', 'height=400,width=600');
+        mywindow.document.write('<html><head><title>EDa! </title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">');
+        mywindow.document.write('</head><body> <h1 class="text-center">Накладная<h1>');
+        mywindow.document.write(data);
+        mywindow.document.write('</body></html>');
+        mywindow.document.close(); // necessary for IE >= 10
+        mywindow.focus(); // necessary for IE >= 10
+        mywindow.print();
+        mywindow.close();
+        return true;
+    }
+</script>

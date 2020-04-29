@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 
@@ -23,7 +24,7 @@ namespace EDa.Models {
             db.Products.Add(new Product { Name = "Чай", Cost = 50, CategoryId = 4 });
             db.Products.Add(new Product { Name = "Кофе", Cost = 80, CategoryId = 4 });
 
-            db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 1});
+            db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 1 });
             db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 3 });
             db.ProductsInMenus.Add(new ProductInMenu { MenuId = 1, ProductId = 6 });
 
@@ -32,8 +33,12 @@ namespace EDa.Models {
             db.Orders.Add(new Order { ClientName = "Марина", ClientAdress = "Ленская 5/3", Date = DateTime.Today, ClientPhone = "5552425" });
             db.SaveChanges();
             db.OrderProducts.Add(new OrderProduct { Order = o1, ProductId = 1, Amount = 1 });
-            db.OrderProducts.Add(new OrderProduct { Order = o1, ProductId = 3, Amount = 1});
+            db.OrderProducts.Add(new OrderProduct { Order = o1, ProductId = 3, Amount = 1 });
             db.OrderProducts.Add(new OrderProduct { Order = o1, ProductId = 6, Amount = 2 });
+
+            db.Authorisers.Add(new AuthoriseTable { Username = "manager", Password = "6654310", UserGroup = "manager" });
+            db.Authorisers.Add(new AuthoriseTable { Username = "operator", Password = "6654310", UserGroup = "operator" });
+
             db.Configuration.ProxyCreationEnabled = false;
 
             db.SaveChanges();

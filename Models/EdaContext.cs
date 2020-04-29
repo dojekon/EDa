@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
 
-
 namespace EDa.Models {
     public class EdaContext : DbContext {
 
@@ -11,5 +10,6 @@ namespace EDa.Models {
         public DbSet<Product> Products { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<ProductInMenu> ProductsInMenus { get; set; }
+        public DbSet<AuthoriseTable> Authorisers { get; set; }
     }
 }

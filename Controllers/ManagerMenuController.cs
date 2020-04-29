@@ -3,12 +3,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace EDa.Controllers {
-    public class ManagerMenuController : Controller
-    {
+    public class ManagerMenuController : Controller {
         EdaContext db = new EdaContext();
 
         public class MenuEx {
@@ -18,34 +16,37 @@ namespace EDa.Controllers {
         }
 
         // GET: ManagerMenu
-        public ActionResult Index()
-        {
-            List<dynamic> Menu = new List<dynamic>();
-            foreach(var menu in db.Menus.ToList()) {
-                List<Product> products = new List<Product>();
-                foreach (var productMenu in db.ProductsInMenus.ToList()) {
-                    if (productMenu.MenuId == menu.Id) {
-                        products.Add(db.Products.Where(x => x.Id == productMenu.ProductId).FirstOrDefault());
+        public ActionResult Index() {
+            if (Session["UserGroup"] != null) {
+                if (Session["UserGroup"].ToString() == "manager") {
+                    List<dynamic> Menu = new List<dynamic>();
+                    foreach (var menu in db.Menus.ToList()) {
+                        List<Product> products = new List<Product>();
+                        foreach (var productMenu in db.ProductsInMenus.ToList()) {
+                            if (productMenu.MenuId == menu.Id) {
+                                products.Add(db.Products.Where(x => x.Id == productMenu.ProductId).FirstOrDefault());
+                            }
+                        }
+                        MenuEx menuEx = new MenuEx();
+                        menuEx.ID = menu.Id;
+                        menuEx.Date = menu.Date.ToShortDateString().ToString();
+                        menuEx.Products = products;
+                        Menu.Add(menuEx);
                     }
-                }
-                MenuEx menuEx = new MenuEx();
-                menuEx.ID = menu.Id;
-                menuEx.Date = menu.Date.ToShortDateString().ToString();
-                menuEx.Products = products;
-                Menu.Add(menuEx);
-            }
-            ViewBag.Menus = Menu;
+                    ViewBag.Menus = Menu;
 
-            Dictionary<string, List<Product>> CatProd = new Dictionary<string, List<Product>>();
-            foreach (Category cat in db.Categories.ToList()) {
-                List<Product> products = new List<Product>();
-                foreach (Product prod in db.Products.ToList()) {
-                    if (prod.CategoryId == cat.Id) products.Add(prod);
-                }
-                if (products.Count > 0) CatProd.Add(cat.Name, products);
-            }
-            ViewBag.CatProd = CatProd;
-            return View();
+                    Dictionary<string, List<Product>> CatProd = new Dictionary<string, List<Product>>();
+                    foreach (Category cat in db.Categories.ToList()) {
+                        List<Product> products = new List<Product>();
+                        foreach (Product prod in db.Products.ToList()) {
+                            if (prod.CategoryId == cat.Id) products.Add(prod);
+                        }
+                        if (products.Count > 0) CatProd.Add(cat.Name, products);
+                    }
+                    ViewBag.CatProd = CatProd;
+                    return View();
+                } else return HttpNotFound();
+            } else return HttpNotFound();
         }
         public JsonResult GetCategories() {
             List<string> Categories = new List<string>();
@@ -100,7 +101,7 @@ namespace EDa.Controllers {
         public void AddProduct(string JsonString) {
             dynamic Data = JsonConvert.DeserializeObject(JsonString);
             string Name = Data.ProductName.ToString();
-            if (db.Products.Where(x=> x.Name == Name).ToList().Count == 0) {
+            if (db.Products.Where(x => x.Name == Name).ToList().Count == 0) {
                 string CatName = Data.ProductCat;
                 db.Products.Add(new Product { Name = Name, Cost = Data.ProductCost, CategoryId = db.Categories.Where(x => x.Name == CatName).FirstOrDefault().Id });
                 db.SaveChanges();
@@ -132,7 +133,7 @@ namespace EDa.Controllers {
                 }
             }
 
-                return Json(products, JsonRequestBehavior.AllowGet);
+            return Json(products, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -148,7 +149,7 @@ namespace EDa.Controllers {
             }
 
             foreach (string product in Data.Products) {
-                db.ProductsInMenus.Add(new ProductInMenu { MenuId = menu.Id, ProductId = db.Products.Where(x=>x.Name == product).FirstOrDefault().Id });
+                db.ProductsInMenus.Add(new ProductInMenu { MenuId = menu.Id, ProductId = db.Products.Where(x => x.Name == product).FirstOrDefault().Id });
             }
             db.SaveChanges();
         }

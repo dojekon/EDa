@@ -1,0 +1,12 @@
+﻿@foreach (var Menu in ViewBag.Menus) {
+<div class="card ml-5 mb-4" style="width: 25rem">
+    <div class="card-body">
+        <h5 class="card-title">Меню на @Menu.Key</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        @foreach (string Product in Menu.Value) {
+            <li class="list-group-item">@Product</li>
+        }
+    </ul>
+</div>
+}

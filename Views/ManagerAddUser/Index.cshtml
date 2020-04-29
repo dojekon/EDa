@@ -1,0 +1,121 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="~/Content/sidebar.css">
+    <title>EDa!: Менеджер</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">EDa! : Менеджер</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+                <li class="nav-item ">
+                    <a class="nav-link" href="Index">Главная <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../ManagerOrders/Index">Заказы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../ManagerMenu/Index">Меню</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../ManagerStatistics/Index">Статистика</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="../ManagerAddUser/Index">Управление<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fixed-bottom" style="width: fit-content;" href="@Url.Action("LogOut","Home")">Выйти</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main class="content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <h3>Регистрация нового пользователя:</h3>
+                    <form action="/ManagerAddUser/AddUser" method="POST">
+                        <div class="form-group">
+                            <label for="UserName">Логин нового пользователя:</label>
+                            <input type="text" class="form-control" id="UserName" name="username" aria-describedby="emailHelp" placeholder="Введите логин">
+                        </div>
+                        <div class="form-group">
+                            <label for="PassWord">Пароль нового пользователя:</label>
+                            <input type="password" class="form-control" id="PassWord" placeholder="Пароль" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="UserGroup">Группа:</label>
+                            <select class="form-control" id="UserGroup" name="usergroup">
+                                <option>Оператор</option>
+                                <option>Менеджер</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Создать</button>
+                    </form>
+                </div>
+                <div class="col">
+                    <h3>Пользователи:</h3>
+                    <table class="table col">
+                        <thead>
+                            <tr>
+                                <th scope="col">Пользователь</th>
+                                <th scope="col">Группа</th>
+                                <th scope="col">Удалить</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in ViewBag.Users) {
+                                <tr>
+                                    <td>@user.Username</td>
+                                    <td>@user.UserGroup</td>
+                                    <td>
+                                        <button onclick="DeleteUser('@user.Username')" class="btn btn-danger">Удалить</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+    @Scripts.Render("~/scripts/jquery-3.4.1.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
+</html>
+<script>
+        function DeleteUser(Username) {
+        if (confirm("Вы уверены, что хотите удалить пользователя?")) {
+            $.ajax({
+            url: '@Url.Action("DeleteUser")',
+            data: { username: Username }
+            });
+
+            alert("Успешно!");
+            document.location = 'https://localhost:44374/ManagerAddUser/Index';
+        }
+    }
+</script>
+
