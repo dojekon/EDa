@@ -67,6 +67,7 @@ namespace EDa.Controllers {
             var order = db.Orders.Where(c => c.Id == id).FirstOrDefault();
             order.ClientName = Data.ClientName;
             order.ClientAdress = Data.ClientAdress;
+            order.ClientPhone = Data.ClientPhone;
             foreach (var product in db.OrderProducts.Where(x => x.OrderId == id)) {
                 db.OrderProducts.Remove(product);
             }

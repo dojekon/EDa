@@ -83,7 +83,7 @@ namespace EDa.Controllers {
         [HttpPost]
         public void AddMenu(string JsonString) {
             dynamic Data = JsonConvert.DeserializeObject(JsonString);
-            DateTime date = DateTime.Parse(Data.Date.ToString());
+            DateTime date = DateTime.Parse(Data.Date.Value.ToString() + " 00:00");
             if (db.Menus.Where(x => x.Date == date).ToList().Count == 0) {
                 db.Menus.Add(new Menu { Date = date });
                 db.SaveChanges();

@@ -1,0 +1,136 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="~/Content/sidebar.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <link rel="stylesheet" href="https://rawgit.com/wwilsman/Datepicker.js/master/dist/css/datepicker.material.css">
+    <script src="https://rawgit.com/wwilsman/Datepicker.js/master/dist/datepicker.js"></script>
+    <title>EDa!: Менеджер</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">EDa! : Менеджер</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+                <li class="nav-item">
+                    <a class="nav-link" href="../Manager/Index">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../ManagerOrders/Index">Заказы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../ManagerMenu/Index">Меню</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="../ManagerStatistics/Index">Статистика <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main class="content-wrapper">
+        <div class="container-fluid">
+            <h2>Статистика:</h2>
+            <div class="row ml-5">
+                <div class="form-group">
+                    <label for="ranged" class="col-form-label mr-5">Дата:</label>
+                    <input type="text" id="ranged" class="form-control">
+                    <button type="button" class="btn btn-primary" onclick="GetStatictics()">Отправить</button>
+                </div>
+
+            </div>
+
+
+
+            <div class="ct-chart ct-octave" id="OrderChart"></div>
+            <div class="ct-chart ct-octave" id="FoodChart"></div>
+
+
+        </div>
+    </main>
+
+
+    @Scripts.Render("~/scripts/jquery-3.4.1.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+
+<script type="text/javascript">
+    var ranged = new Datepicker('#ranged', {
+        inline: true,
+        ranged: true
+    });
+
+    function GetStatictics() {
+        $.ajax({
+            url: '@Url.Action("GetStat")',         /* Куда пойдет запрос */
+            method: 'get',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            async: false,
+            data: { dates: document.getElementById("ranged").value },
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                console.log(data);
+
+                let LabelsOrder = [];
+                let ChartsOrder = [];
+
+                let LabelsFood = [];
+                let ChartsFood = [];
+
+                var i = 0;
+
+                for (var Label in data.orderStat) {
+                    LabelsOrder[i] = Label;
+                    ChartsOrder[i] = data.orderStat[Label];
+                    i++;
+                }
+
+                i = 0;
+
+                for (var Label in data.foodStat) {
+                    LabelsFood[i] = Label;
+                    ChartsFood[i] = data.foodStat[Label]
+                    i++;
+                }
+
+
+                // Initialize a Line chart in the container with the ID chart1
+                new Chartist.Line('#OrderChart', {
+                    labels: LabelsOrder,
+                    series: [ChartsOrder]
+                });
+
+                // Initialize a Line chart in the container with the ID chart2
+                new Chartist.Bar('#FoodChart', {
+                    labels: LabelsFood,
+                    series: [ChartsFood]
+                });
+
+
+
+            }
+        });
+    }
+</script>
+

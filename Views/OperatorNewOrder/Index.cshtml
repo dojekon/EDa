@@ -1,0 +1,153 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="~/Content/sidebar.css">
+    <title>EDa!: Оператор</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">EDa! : Оператор</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+                <li class="nav-item">
+                    <a class="nav-link" href="Index">Главная</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="../OperatorNewOrder/Index">Новый заказ <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../OperatorOrders/Index">Заказы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../OperatorMenu/Index">Меню</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main class="content-wrapper">
+        <div class="container-fluid">
+            <h2>Создать новый заказ:</h2>
+            <button type="button" class="btn btn-success" onclick="SaveData()">Создать</button>
+
+            <div class="row">
+
+                <div class="col-4 mt-3">
+                    <form>
+                        <div class="form-group">
+                            <label for="clientName">Имя клиента:</label>
+                            <input type="text" class="form-control" id="clientName">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientAddress">Адрес клиента:</label>
+                            <input type="text" class="form-control" id="clientAddress">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientAddress">Телефон клиента:</label>
+                            <input type="text" class="form-control" id="clientPhone">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" onclick="AddFood()">+</button>
+                            <button type="button" class="btn btn-primary" onclick="DeleteFood()" style="width: 37px;"> - </button>
+                        </div>
+                        <div id="foodBlock">
+
+                        </div>
+                    </form>
+                </div>
+                <div class="col">
+                    <div class="card ml-5" style="width: 25rem">
+                        <div class="card-body">
+                            <h5 class="card-title">Меню на сегодня @ViewBag.DateToday</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var Product in ViewBag.Menu) {
+                                <li class="list-group-item">@Product.Name</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    @Scripts.Render("~/scripts/jquery-3.4.1.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
+</html>
+<script>
+    var foodCount = 0;
+
+        function SaveData() {
+        var Products = [];
+        var j = 0;
+        for (var i = 1; i <= foodCount; i++) {
+            Products[j] = {
+                Name: document.getElementById("selectFood" + i).value,
+                Amount: document.getElementById("foodCount" + i).value
+            }
+            j++;
+        }
+        var Data;
+        Data = {
+            ClientName: document.getElementById("clientName").value,
+            ClientAdress: document.getElementById("clientAddress").value,
+            ClientPhone: document.getElementById("clientPhone").value,
+            Products: Products
+        }
+        console.log(JSON.stringify(Data));
+
+        $.ajax({
+            url: '@Url.Action("CreateNewOrder")',
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({ JsonString: JSON.stringify(Data) }),
+            contentType: 'application/json',
+        });
+        alert("Успешно!");
+        document.location = 'https://localhost:44374/OperatorOrders/Index';
+    }
+
+    function AddFood() {
+        foodCount++;
+
+        document.getElementById('foodBlock').innerHTML += '<div class="form-group form-inline" id="food' + foodCount + '"> <select class="form-control" id="selectFood' + foodCount + '"></select> <label class="ml-2 mr-2" for="foodCount' + foodCount + '">Кол-во:</label> <input type="text" class="form-control col-2" id="foodCount' + foodCount + '"></div>';
+
+        $.ajax({
+            url: '@Url.Action("GetProducts","ManagerOrders")',         /* Куда пойдет запрос */
+            method: 'get',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            async: false,
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                for (var key in data) {
+                    $('#selectFood' + foodCount).append('<option value="' + data[key] + '">' + data[key] + '</option>');
+                }
+            }
+        });
+    }
+
+    function DeleteFood() {
+        if (foodCount != 0) {
+            document.getElementById("food" + foodCount).remove();
+            foodCount -= 1;
+        }
+    }
+</script>
