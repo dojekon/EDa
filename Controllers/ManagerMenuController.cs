@@ -142,7 +142,7 @@ namespace EDa.Controllers {
             DateTime MenuDate = DateTime.Parse(Data.OldDate.Value);
             Menu menu = db.Menus.Where(x => x.Date == MenuDate).FirstOrDefault();
             if (Data.OldDate != Data.NewDate) {
-                menu.Date = DateTime.Parse(Data.NewDate);
+                menu.Date = DateTime.Parse(Data.NewDate.Value.ToString());
             }
             foreach (ProductInMenu product in db.ProductsInMenus.ToList()) {
                 if (product.MenuId == menu.Id) db.ProductsInMenus.Remove(product);
